@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+    {% include 'menu.html' %}
+ <div class="container-fluid">
+     <div class="row">
+        <!-- Page content -->
+       <div class="col-xs-12 col-sm-12 col-md-10 col-lg-12 main">
+          <div class="block">
+
+            <h2>Painel - Cliente</h2>
+
+            <div class="container">
+                <form method="get" class="form">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class='col-sm-4 col-xs-12'>
+                            <label for="datetimepicker1">Data inicial</label>
+                            <div class="input-group date" id="datetimepicker1">
+                                <input name="start_date" type="text" class="form-control" data-date-format="YYYY-MM-DD HH:mm"/>
+                                <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                            </div>
+
+
+                        </div>
+
+                        <div class='col-sm-4 col-xs-12'>
+                            <label for="datetimepicker2">Data final</label>
+                            <div class="input-group date" id="datetimepicker2">
+                                <input name="end_date" type="text" class="form-control" data-date-format="YYYY-MM-DD HH:mm"/>
+                                <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                            </div>
+                        </div>
+
+                        <div class='col-sm-4 col-xs-12'>
+                            <div class="form-group vcenter">
+                                <button id="submit" type="submit"  class="btn btn-success">
+                                    <span class="glyphicon glyphicon-ok-sign"></span> Filtrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <hr />
+
+            <div class="row">
+
+                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <h6 class="text-center graphTitle">Total de jobs/cliente</h6>
+                        <div id="graphJob" style="height: 300px;"></div>
+                        <script type="text/javascript">
+                            $(function() {
+                                Morris.Donut({
+                                    element: 'graphJob',
+                                    data: [
+                                        {% for item1, item2 in lsjc_graph %}
+                                            {"label":"{{ item1 }}","value":{{ item2 }} },
+                                        {% endfor %}
+                                    ]
+                                });
+                            });
+                        </script>
+
+                        <table class="table table-condensed table-responsive">
+                           {% for item1, item2 in lsjc_table %}
+                            <tr>
+                                    <td>{{ item1 }}</td>
+                                    <td>{{ item2 }}</td>
+
+                            </tr>
+                            {% endfor %}
+
+                        </table>
+                </div>
+
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <h6 class="text-center graphTitle">Total de arquivos/cliente</h6>
+                        <div id="graphFiles" style="height: 300px;"></div>
+                        <script type="text/javascript">
+                            $(function() {
+                                Morris.Donut({
+                                    element: 'graphFiles',
+                                    data: [
+                                        {% for item1, item2 in lsjf_graph %}
+                                            {"label":"{{ item1 }}","value":{{ item2 }} },
+                                        {% endfor %}
+                                    ]
+                                });
+                            });
+                        </script>
+
+                        <table class="table table-condensed table-responsive">
+                            {% for item1, item2 in lsjf_table %}
+                            <tr>
+                                    <td>{{ item1 }}</td>
+                                    <td>{{ item2 }}</td>
+
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <h6 class="text-center graphTitle">Tamanho total/cliente</h6>
+                        <div id="graphSize" class='text-center' style="height: 300px;"></div>
+                        <script type="text/javascript">
+                            $(function () {
+                            Morris.Donut({
+                            element: 'graphSize',
+                                    data:[
+
+                                    {% for item1, item2 in lsja_graph %}
+
+                                          {"label":"{{ item1 }}","value":{{ item2 }}, "formatted":"{{ item2|filesizeformat }}"},
+                                    {% endfor %}
+
+                                    ],
+                                    formatter: function (x, data) { return data.formatted; },
+                                });
+                            });
+                        </script>
+
+                        <table class="table table-condensed table-responsive">
+                                {% for item1, item2 in lsja_table %}
+                            <tr>
+                                    <td>{{ item1 }}</td>
+                                    <td>{{ item2|filesizeformat }}</td>
+
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+          </div>
+       </div>
+</div>
+
+
+<script> type="text/javascript">
+    $(document).ready(function() {
+
+        // SET AUTOMATIC PAGE RELOAD TIME TO 5000 MILISECONDS (5 SECONDS).
+        setInterval('refreshPage()', 60000 );
+    });
+    function refreshPage() { location.reload(); }
+</script>
+
+{% endblock %}

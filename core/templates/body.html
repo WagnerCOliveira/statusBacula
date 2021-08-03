@@ -1,0 +1,148 @@
+{% load static %}
+{% load bootstrap4 %}
+{% block content %}
+<div class="container-fluid">
+        <div class="row">
+            <!-- Page content -->
+            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-12 main">
+
+                <div class="block">
+                    <script src="{% static 'js/custom.js' %}"></script>
+                    <div class="row">
+                            {% include 'statusatual.html' %}
+
+                            <div class="col-sm-9 col-md-9 col-lg-9">
+                                <h3>Últimas 24 horas</h3>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+
+                                            <div class="stats">
+                                                    <h1 class="number">16.832</h1>
+                                                    <p class="avg">Arquivos</p>
+                                            </div>
+                                            <div class="stats">
+                                                    <h1 class="number">50.27 GB</h1>
+                                                    <p class="avg">Tamanho total</p>
+                                            </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <h6 class="text-center graphTitle">Total de MB/hora</h6>
+                                            <div id="graph24Hour" style="height: 160px;"></div>
+                                            <script type="text/javascript">
+                                            $(function () {
+                                                Morris.Bar({
+                                                    element: 'graph24Hour',
+                                                    data: [{"label":"08:00","value":null,"formatted":"0 B"},{"label":"09:00","value":null,"formatted":"0 B"},{"label":"10:00","value":null,"formatted":"0 B"},{"label":"11:00","value":null,"formatted":"0 B"},{"label":"12:00","value":null,"formatted":"0 B"},{"label":"13:00","value":null,"formatted":"0 B"},{"label":"14:00","value":null,"formatted":"0 B"},{"label":"15:00","value":null,"formatted":"0 B"},{"label":"16:00","value":null,"formatted":"0 B"},{"label":"17:00","value":null,"formatted":"0 B"},{"label":"18:00","value":null,"formatted":"0 B"},{"label":"19:00","value":null,"formatted":"0 B"},{"label":"20:00","value":50486810282,"formatted":"47.02 GB"},{"label":"21:00","value":3494659916,"formatted":"3.25 GB"},{"label":"22:00","value":null,"formatted":"0 B"},{"label":"23:00","value":null,"formatted":"0 B"},{"label":"00:00","value":null,"formatted":"0 B"},{"label":"01:00","value":null,"formatted":"0 B"},{"label":"02:00","value":null,"formatted":"0 B"},{"label":"03:00","value":null,"formatted":"0 B"},{"label":"04:00","value":null,"formatted":"0 B"},{"label":"05:00","value":null,"formatted":"0 B"},{"label":"06:00","value":null,"formatted":"0 B"},{"label":"07:00","value":null,"formatted":"0 B"}],
+                                                    hoverCallback: function(index, options, content) {
+                                                        var row = options.data[index];
+                                                        return "Hora: " + row.label + " <br /> " + row.formatted;
+                                                    },
+                                                    xkey: 'label',
+                                                    ykeys: ['value'],
+                                                    labels: ['Value'],
+                                                    parseTime: false,
+                                                    axes: false,
+                                                });
+                                            });
+                                        </script>
+                                    </div>
+
+
+                                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <h6 class="text-center graphTitle">Total de jobs/Pool</h6>
+                                            <div id="graphPool" style="height: 160px;"></div>
+                                            <script type="text/javascript">
+                                            $(function () {
+                                                Morris.Donut({
+                                                    element: 'graphPool',
+                                                    data: [{"label":"pool_quinta","value":9}]
+                                                });
+                                            });
+                                        </script>
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="row">
+                        <h3>Este mês</h3>
+                        <hr />
+
+                        <!-- Graph total daily bytes copied -->
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div>
+                                <canvas id="grafico1"></canvas>
+                            </div>
+                            <script type="text/javascript">
+                                    $.get('{% url "dados" %}', function(data){
+                                      var ctx = $("#grafico1").get(0).getContext("2d");
+                                        new Chart(ctx, {
+                                            type: 'line',
+                                            data: data,
+                                            options:{
+                                                responsive: true,
+                                                plugins: {
+                                                    legend: {
+                                                        position: 'top',
+                                                    },
+                                                    title: {
+                                                        display: true,
+                                                        text: 'Total armazenado (Todas as mídias)'
+                                                    }
+                                                }
+                                            },
+                                        });
+                                    });
+                                </script>
+
+                        </div>
+
+                        <!-- Graph total daily bytes stored -->
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div>
+                                <canvas id="grafico"></canvas>
+                            </div>
+                            {% bootstrap_javascript jquery='full' %}
+                            <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+                            <script type="text/javascript">
+                                    $.get('{% url "dados" %}', function(data){
+                                      var ctx = $("#grafico").get(0).getContext("2d");
+                                        new Chart(ctx, {
+                                            type: 'line',
+                                            data: data,
+                                            options:{
+                                                responsive: true,
+                                                plugins: {
+                                                    legend: {
+                                                        position: 'top',
+                                                    },
+                                                    title: {
+                                                        display: true,
+                                                        text: 'Total armazenado (Todas as mídias)'
+                                                    }
+                                                }
+                                            },
+                                        });
+                                    });
+                            </script>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<script> type="text/javascript">
+    $(document).ready(function() {
+
+        // SET AUTOMATIC PAGE RELOAD TIME TO 5000 MILISECONDS (5 SECONDS).
+        setInterval('refreshPage()', 60000 );
+    });
+    function refreshPage() { location.reload(); }
+</script>
+{% endblock %}

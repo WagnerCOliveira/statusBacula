@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+    {% include 'menu.html' %}
+
+
+<div class="container-fluid">
+        <div class="row">
+            <!-- Page content -->
+            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-12 main">
+
+
+                <div class="block">
+
+                <h2>Painel - Jobs</h2>
+
+                <div class="container">
+                    <form method="get" class="form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class='col-sm-4 col-xs-12'>
+                                <label for="datetimepicker1">Data inicial</label>
+                                <div class="input-group date" id="datetimepicker1">
+                                    <input name="start_date" type="text" class="form-control" data-date-format="YYYY-MM-DD HH:mm" required/>
+                                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                                </div>
+                            </div>
+
+                            <div class='col-sm-4 col-xs-12'>
+                                <label for="datetimepicker2">Data final</label>
+                                <div class="input-group date" id="datetimepicker2">
+                                    <input name="end_date" type="text" class="form-control" data-date-format="YYYY-MM-DD HH:mm" required/>
+                                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                                </div>
+                            </div>
+
+                            <div class='col-sm-4 col-xs-12'>
+                                <div class="form-group vcenter">
+                                    <button id="submit" type="submit"  class="btn btn-success">
+                                        <span class="glyphicon glyphicon-ok-sign"></span> Filtrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <hr />
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <h6 class="text-center graphTitle">Total de jobs por tipo</h6>
+                        <div id="graphJobType" style="height: 200px;"></div>
+                        <script type="text/javascript">
+                            $(function () {
+                            Morris.Donut({
+                            element: 'graphJobType',
+                                    data: [{"label":"Backup","value":9}]
+                            });
+                            });
+                        </script>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <h6 class="text-center graphTitle">Total de jobs por status</h6>
+                        <div id="graphJobStatus" style="height: 200px;"></div>
+                        <script type="text/javascript">
+                                    $(function () {
+                                    Morris.Donut({
+                                    element: 'graphJobStatus',
+                                            data: [
+                                                {% for item1, item2 in qs_statusjobs %}
+                                                    {"label":"{{ item1|upper }}","value":{{ item2 }}}
+                                                {% endfor %}
+                                            ]
+                                    });
+                                    });
+                        </script>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <h6 class="text-center graphTitle">Total de jobs por nível de backup</h6>
+                        <div id="graphJobLevel" style="height: 200px;"></div>
+                        <script type="text/javascript">
+                                    $(function () {
+                                    Morris.Donut({
+                                    element: 'graphJobLevel',
+                                            data: [{"label":"Diferencial","value":9}]
+                                    });
+                                    });
+                        </script>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <h6 class="text-center graphTitle">Total de jobs/dia</h6>
+                        <div id="graphTotalJobs" style="height: 300px;"></div>
+                        <script type="text/javascript">
+                                    $(function() {
+                                    Morris.Bar({
+                                    element: 'graphTotalJobs',
+                                            data:[{"label":"2021-06-03","value":14},{"label":"2021-06-04","value":0}],
+                                            xkey: 'label',
+                                            ykeys: ['value'],
+                                            labels: ['Value'],
+                                            parseTime: false,
+                                            axes: false,
+                                    });
+                                    });
+                        </script>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <h6 class="text-center graphTitle">Total de arquivos/dia</h6>
+                        <div id="graphTotalFiles" style="height: 300px;"></div>
+                        <script type="text/javascript">
+                                    $(function() {
+                                    Morris.Bar({
+                                    element: 'graphTotalFiles',
+                                            data:[{"label":"2021-06-03","value":22139},{"label":"2021-06-04","value":null}],
+                                            xkey: 'label',
+                                            ykeys: ['value'],
+                                            labels: ['Value'],
+                                            parseTime: false,
+                                            axes: false,
+                                    });
+                                    });
+                        </script>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+        </div>
+</div>
+<script> type="text/javascript">
+    $(document).ready(function() {
+
+        // SET AUTOMATIC PAGE RELOAD TIME TO 5000 MILISECONDS (5 SECONDS).
+        setInterval('refreshPage()', 60000 );
+    });
+    function refreshPage() { location.reload(); }
+</script>
+
+{% endblock %}

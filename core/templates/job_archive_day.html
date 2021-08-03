@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    {% include 'menu.html' %}
+
+    <h1>{{ day }}</h1>
+
+    <ul>
+        {% for obj in object_list %}
+            <li>{{ obj.endtime|date:"j F, Y" }}: {{ obj.name.decode|upper }}</li>
+        {% endfor %}
+    </ul>
+
+    <p>
+        {% if previous_day %}
+            Previous Day: {{ previous_day }}
+        {% endif %}
+        {% if previous_day and next_day %}--{% endif %}
+        {% if next_day %}
+            Next Day: {{ next_day }}
+        {% endif %}
+    </p>
+
+{% endblock %}

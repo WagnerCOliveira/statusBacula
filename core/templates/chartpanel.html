@@ -1,0 +1,94 @@
+{% load static %}
+{% load bootstrap4 %}
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    {% bootstrap_css %}
+
+    <title>Geek Charts</title>
+  </head>
+  <body>
+  <div class="container">
+    <h1 class="text-primary">Geek Charts</h1>
+    <form class="form" >
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class='col-sm-4 col-xs-12'>
+                                <label for="datetimepicker1">Data inicial</label>
+                                <div class="input-group date" id="datetimepicker1">
+                                    <input name="start_date"  class="form-control" data-date-format="YYYY-MM-DD HH:mm"/>
+                                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                                </div>
+                            </div>
+                            <div class='col-sm-4 col-xs-12'>
+                                <label for="datetimepicker2">Data final</label>
+                                <div class="input-group date" id="datetimepicker2">
+                                    <input name="end_date"  class="form-control" data-date-format="YYYY-MM-DD HH:mm"/>
+                                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                                </div>
+                            </div>
+                            <div class='col-sm-4 col-xs-12'>
+                               <div class="form-group vcenter">
+                                    <button id="submit" type="submit"  class="btn btn-success">
+                                        <span class="glyphicon glyphicon-ok-sign"></span> Filtrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+  </div>
+
+  <hr />
+<div class="row">
+
+              <div class='col-sm-4 col-xs-12'>
+                  <canvas id="pie-chart"></canvas>
+              </div>
+
+             {% bootstrap_javascript jquery='full' %}
+            <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+
+              <script type="text/javascript">
+               var config = {
+                  type: 'line',
+                  data: {
+                    datasets: [{
+                      data: {{ data|safe }},
+                      backgroundColor: [
+                        '#696969', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'
+                      ],
+                      label: 'Jobs/Arquivos'
+                    }],
+                    labels: {{ labels|safe }}
+                  },
+                  options: {
+                    responsive: true
+                  }
+                };
+
+                window.onload = function() {
+                  var ctx = document.getElementById('pie-chart').getContext('2d');
+                  window.myPie = new Chart(ctx, config);
+                };
+
+              </script>
+
+            <table class="table table-condensed table-responsive">
+                       {% for item1, item2 in List %}
+                        <tr>
+                                <td>{{ item1 }}</td>
+                                <td>{{ item2 }}</td>
+
+                        </tr>
+                        {% endfor %}
+
+            </table>
+
+</div>
+  </body>
+</html>
